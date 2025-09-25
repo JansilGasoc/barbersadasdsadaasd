@@ -165,7 +165,13 @@
                         @enderror
                     </div>
                 </div>
-
+                <select name="barber_id" required
+                    class="block w-full pl-3 pr-3 py-3 border rounded-lg bg-gray-700 text-white focus:ring-amber-500 focus:border-amber-500">
+                    <option value="" disabled selected>-- Select a barber --</option>
+                    @foreach ($barbers as $barber)
+                        <option value="{{ $barber->id }}">{{ $barber->name }}</option>
+                    @endforeach
+                </select>
                 <!-- Date & Time Section -->
                 <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
                     <h2 class="text-xl font-semibold text-gray-100 mb-6 flex items-center">
@@ -222,16 +228,26 @@
                                 </div>
                                 <select name="appointment_time" id="appointment_time"
                                     class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg 
-                       focus:ring-2 focus:ring-amber-500 focus:border-amber-500 
-                       bg-gray-700 dark:border-gray-600 text-white 
-                       transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-500"
+    focus:ring-2 focus:ring-amber-500 focus:border-amber-500 
+    bg-gray-700 dark:border-gray-600 text-white 
+    transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-500"
                                     required>
                                     @for ($hour = 7; $hour <= 18; $hour++)
-                                        <option value="{{ sprintf('%02d:00', $hour) }}">
-                                            {{ date('h:i A', strtotime(sprintf('%02d:00', $hour))) }}
+                                        @php
+                                            $time1 = sprintf('%02d:00', $hour);
+                                            $time2 = sprintf('%02d:30', $hour);
+                                        @endphp
+
+                                        <option value="{{ $time1 }}"
+                                            {{ in_array($time1, $bookedTimes ?? []) ? 'disabled class=bg-red-800 text-gray-400' : '' }}>
+                                            {{ date('h:i A', strtotime($time1)) }}
+                                            {{ in_array($time1, $bookedTimes ?? []) ? ' (Unavailable)' : '' }}
                                         </option>
-                                        <option value="{{ sprintf('%02d:30', $hour) }}">
-                                            {{ date('h:i A', strtotime(sprintf('%02d:30', $hour))) }}
+
+                                        <option value="{{ $time2 }}"
+                                            {{ in_array($time2, $bookedTimes ?? []) ? 'disabled class=bg-red-800 text-gray-400' : '' }}>
+                                            {{ date('h:i A', strtotime($time2)) }}
+                                            {{ in_array($time2, $bookedTimes ?? []) ? ' (Unavailable)' : '' }}
                                         </option>
                                     @endfor
                                 </select>

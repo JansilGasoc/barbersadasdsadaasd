@@ -21,13 +21,16 @@ class User extends Authenticatable
         'name',
         'email',
         'address',
+        'role',
         'phone',
         'password',
     ];
+
     public function appointments()
     {
         return $this->hasMany(\App\Models\Appointment::class, 'barber_id');
     }
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -37,6 +40,11 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function barberAppointments()
+    {
+        return $this->hasMany(Appointment::class, 'barber_id');
+    }
 
     /**
      * Get the attributes that should be cast.

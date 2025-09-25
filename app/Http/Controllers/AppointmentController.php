@@ -11,19 +11,13 @@ class AppointmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
         $barbers = User::all();
-        return view('appointments.appointmentstore', compact('barbers'));
+        $bookedTimes = \App\Models\Appointment::pluck('appointment_time')->toArray();
+
+        return view('appointments.appointmentstore', compact('barbers', 'bookedTimes'));
     }
 
     /**
@@ -39,23 +33,28 @@ class AppointmentController extends Controller
             'appointment_date' => 'required|date|after_or_equal:today',
             'appointment_time' => 'required',
             'notes' => 'nullable|string',
+            'barber_id' => 'required|exists:users,id',
         ]);
         // Check if the exact time slot is already taken
-        $exists = Appointment::where('appointment_date', $request->appointment_date)
-            ->where('appointment_time', $request->appointment_time)
+        $exists = Appointment::where('appointment_date', $validated['appointment_date'])
+            ->where('appointment_time', $validated['appointment_time'])
+            ->where('barber_id', $validated['barber_id'] ?? null)
             ->exists();
 
         if ($exists) {
-            // Get all input except appointment_time
+            // Preserve input except appointment_time
             $inputData = $request->except('appointment_time');
 
             return redirect()->back()
-                ->withInput($inputData) // Only flash input without appointment_time
+                ->withInput($inputData)
                 ->with('error', 'This time slot is already booked. Please select a different time.');
         }
+
+        // Create appointment
         Appointment::create($validated);
 
-        return redirect()->back()->with('success', 'Appointment booked successfully Please wait the barber contact you!');
+        return redirect()->back()
+            ->with('success', 'Appointment booked successfully! Please wait for the barber to contact you.');
     }
 
     /**
