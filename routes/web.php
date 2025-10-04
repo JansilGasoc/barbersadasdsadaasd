@@ -23,8 +23,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::delete('/delete{id}', [AppointmentController::class, 'destroy'])->name('delete-appointment');
-
+    Route::get('/histories', [AppointmentController::class, 'history'])->name('histories.index');
     Route::resource('barber', BarberController::class);
+    Route::post('/appointments/{id}/done', [AppointmentController::class, 'done'])->name('appointments.done');
 });
 
 require __DIR__.'/auth.php';

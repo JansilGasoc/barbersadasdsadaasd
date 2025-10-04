@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
-use App\Models\User;
+use App\Models\Barber;
+use App\Models\History;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -14,10 +15,18 @@ class AppointmentController extends Controller
     public function create()
     {
         //
-        $barbers = User::all();
+        $barbers = Barber::all();
         $bookedTimes = \App\Models\Appointment::pluck('appointment_time')->toArray();
 
-        return view('appointments.appointmentstore', compact('barbers', 'bookedTimes'));
+        return view('appointments.appointmentform', compact('barbers', 'bookedTimes'));
+    }
+
+    public function history()
+    {
+        //
+        $histories = History::with('barber')->latest()->paginate(10);
+
+        return view('appointments.history', compact('histories'));
     }
 
     /**
@@ -55,6 +64,27 @@ class AppointmentController extends Controller
 
         return redirect()->back()
             ->with('success', 'Appointment booked successfully! Please wait for the barber to contact you.');
+    }
+
+    public function done($id)
+    {
+        $appointment = Appointment::findOrFail($id);
+
+        // Save appointment details into histories
+        History::create([
+            'barber_id' => $appointment->barber_id,
+            'customer_name' => $appointment->customer_name,
+            'customer_phone' => $appointment->customer_phone,
+            'service' => $appointment->service,
+            'appointment_date' => $appointment->appointment_date,
+            'appointment_time' => $appointment->appointment_time,
+            'notes' => $appointment->notes,
+        ]);
+
+        // Optionally delete or mark appointment as completed
+        $appointment->delete(); // or $appointment->update(['status' => 'done']);
+
+        return redirect()->back()->with('success', 'Appointment marked as done and saved in history.');
     }
 
     /**

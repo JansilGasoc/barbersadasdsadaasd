@@ -22,6 +22,12 @@
                         {{ __('Barbers') }}
                     </x-nav-link>
                 </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('histories.index')" :active="request()->routeIs('histories.index')">
+                        {{ __('History') }}
+                    </x-nav-link>
+                </div>
             </div>
             <!-- Right: Theme Toggle + Profile Dropdown -->
             <div class="flex items-center space-x-4">
@@ -119,6 +125,14 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('barber.index')" :active="request()->routeIs('barber.index')">
+                {{ __('Barbers') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('histories.index')" :active="request()->routeIs('historeis.index')">
+                {{ __('History') }}
             </x-responsive-nav-link>
         </div>
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">

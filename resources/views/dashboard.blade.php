@@ -61,17 +61,28 @@
                                         <td class="p-3 text-gray-700 dark:text-gray-300">
                                             {{ \Carbon\Carbon::parse($appt->appointment_time)->format('h:i A') }}
                                         </td>
-                                        <td class="p-3 text-gray-700 dark:text-gray-300">{{ $appt->notes }}</td>
-                                        <td class="p-3 text-center">
+                                        <td class="p-3 text-gray-700 dark:text-gray-300">{{ $appt->notes ?: 'none' }}
+                                        </td>
+                                        <td class="p-3 text-center flex w-full justify-center gap-2">
                                             <form action="{{ route('delete-appointment', $appt->id) }}" method="POST"
                                                 onsubmit="return confirm('Are you sure you want to delete this appointment?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
                                                     class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-xs">
-                                                    Delete
+                                                    Canceled
                                                 </button>
                                             </form>
+                                            <form action="{{ route('appointments.done', $appt->id) }}" method="POST"
+                                                onsubmit="return confirm('Are you sure you want to save this appointment?')">
+                                                @csrf
+                                                @method('POST')
+                                                <button type="submit"
+                                                    class="bg-green-600 text-white px-3 py-1 rounded-lg hover:bg-green-700 text-xs">
+                                                    Done
+                                                </button>
+                                            </form>
+
                                         </td>
                                     </tr>
                                 @endforeach

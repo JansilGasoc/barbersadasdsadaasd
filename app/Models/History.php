@@ -2,17 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Appointment extends Model
+class History extends Model
 {
-    use HasFactory;
-
     //
     protected $fillable = [
-        'customer_name',
         'barber_id',
+        'customer_name',
         'customer_phone',
         'service',
         'appointment_date',
@@ -22,6 +19,6 @@ class Appointment extends Model
 
     public function barber()
     {
-        return $this->belongsTo(Barber::class, 'barber_id');
+        return $this->belongsTo(Barber::class);
     }
 }
